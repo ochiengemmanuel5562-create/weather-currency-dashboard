@@ -26,21 +26,23 @@
   </section>
 
     <section id="currency" class="card">
-      <h2>Currency converter</h2>
-      <form id="currency-form">
-        <label for="amount-input">Amount</label>
-        <input id="amount-input" type="number" min="0" step="any" value="100">
+  <h2>Currency converter</h2>
+  <form id="currency-form">
+    <label for="amount-input">Amount</label>
+    <input id="amount-input" type="number" min="0" step="any" value="100">
 
-        <label for="from-select">From</label>
-        <select id="from-select"></select>
+    <label for="from-select">From</label>
+    <select id="from-select"><option>Loading...</option></select>
 
-        <label for="to-select">To</label>
-        <select id="to-select"></select>
+    <button id="swap-button" type="button" aria-label="Swap currencies">⇄</button>
 
-        <button type="submit">Convert</button>
-      </form>
-      <div id="currency-result" aria-live="polite">Choose currencies to convert.</div>
-    </section>
+    <label for="to-select">To</label>
+    <select id="to-select"><option>Loading...</option></select>
+
+    <button type="submit">Convert</button>
+  </form>
+  <div id="currency-result" aria-live="polite">Loading exchange rates...</div>
+</section>
   </main>
 
   <footer>
@@ -53,5 +55,6 @@
   </footer>
 
   <script type="module" src="script.js"></script>
+  <script type="module" src="currency.js"></script>
 </body>
 </html>

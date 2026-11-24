@@ -15,3 +15,7 @@
 .big-icon {
   font-size: 48px;
 }
+.big-number {
+  font-size: 24px;
+  font-weight: bold;
+}
