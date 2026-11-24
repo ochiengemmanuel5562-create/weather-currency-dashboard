@@ -14,14 +14,16 @@
 
   <main>
     <section id="weather" class="card">
-      <h2>Weather</h2>
-      <form id="weather-form">
-        <label for="city-input">City</label>
-        <input id="city-input" type="text" placeholder="Try Lisbon" required>
-        <button type="submit">Search</button>
-      </form>
-      <div id="weather-result" aria-live="polite">Search for a city to see its weather.</div>
-    </section>
+  <h2>Weather</h2>
+  <form id="weather-form">
+    <label for="city-input">City</label>
+    <input id="city-input" type="text" placeholder="Try Lisbon" required>
+    <button type="submit">Search</button>
+  </form>
+  <button id="unit-button" type="button">Show °F</button>
+  <div id="weather-result" aria-live="polite">Search for a city to see its weather.</div>
+  <div id="forecast"></div>
+  </section>
 
     <section id="currency" class="card">
       <h2>Currency converter</h2>

@@ -1,0 +1,17 @@
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.forecast-day {
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.big-icon {
+  font-size: 48px;
+}
