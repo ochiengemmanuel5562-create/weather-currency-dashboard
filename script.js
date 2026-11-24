@@ -1,3 +1,6 @@
+import { fetchJson } from "./api.js";
+import { loadSetting, saveSetting } from "./storage.js";
+
 const weatherForm = document.getElementById("weather-form");
 const cityInput = document.getElementById("city-input");
 const weatherResult = document.getElementById("weather-result");
@@ -7,7 +10,7 @@ const searchButton = weatherForm.querySelector("button");
 
 let currentCity = null;
 let currentWeather = null;
-let useFahrenheit = false;
+let useFahrenheit = loadSetting("useFahrenheit", false) === true;
 
 const WEATHER_CODES = {
   0: { text: "Clear sky", icon: "☀️" },
@@ -61,13 +64,7 @@ function formatDay(dateText, index) {
 
 async function findCity(name) {
   const url = `https://geocoding-api.open-meteo.com/v1/search?count=1&name=${encodeURIComponent(name)}`;
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error("The city search failed (status " + response.status + ").");
-  }
-
-  const data = await response.json();
+  const data = await fetchJson(url);
 
   if (!data.results || data.results.length === 0) {
     return null;
@@ -83,13 +80,8 @@ async function getWeather(latitude, longitude) {
     "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m" +
     "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
     "&forecast_days=5&temperature_unit=celsius&timezone=auto";
-  const response = await fetch(url);
 
-  if (!response.ok) {
-    throw new Error("The weather service failed (status " + response.status + ").");
-  }
-
-  return await response.json();
+  return await fetchJson(url);
 }
 
 function makeIcon(conditions) {
@@ -171,21 +163,7 @@ function render() {
   renderForecast();
 }
 
-unitButton.addEventListener("click", function () {
-  useFahrenheit = !useFahrenheit;
-  unitButton.textContent = useFahrenheit ? "Show °C" : "Show °F";
-  render();
-});
-
-weatherForm.addEventListener("submit", async function (event) {
-  event.preventDefault();
-
-  const name = cityInput.value.trim();
-  if (name === "") {
-    weatherResult.textContent = "Please type a city name.";
-    return;
-  }
-
+async function searchCity(name) {
   searchButton.disabled = true;
   weatherResult.textContent = "Searching...";
   forecastBox.innerHTML = "";
@@ -203,6 +181,7 @@ weatherForm.addEventListener("submit", async function (event) {
 
     currentWeather = await getWeather(city.latitude, city.longitude);
     currentCity = city;
+    saveSetting("lastCity", name);
     render();
   } catch (error) {
     weatherResult.textContent = "Something went wrong: " + error.message;
@@ -210,4 +189,35 @@ weatherForm.addEventListener("submit", async function (event) {
   } finally {
     searchButton.disabled = false;
   }
+}
+
+function updateUnitButton() {
+  unitButton.textContent = useFahrenheit ? "Show °C" : "Show °F";
+}
+
+unitButton.addEventListener("click", function () {
+  useFahrenheit = !useFahrenheit;
+  saveSetting("useFahrenheit", useFahrenheit);
+  updateUnitButton();
+  render();
 });
+
+weatherForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const name = cityInput.value.trim();
+  if (name === "") {
+    weatherResult.textContent = "Please type a city name.";
+    return;
+  }
+
+  searchCity(name);
+});
+
+updateUnitButton();
+
+const savedCity = loadSetting("lastCity", "");
+if (typeof savedCity === "string" && savedCity !== "") {
+  cityInput.value = savedCity;
+  searchCity(savedCity);
+}
