@@ -4,57 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather and Currency Dashboard</title>
+  <meta name="description" content="A weather and currency dashboard: search any city for a 5-day forecast and convert between more than 160 currencies.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
+  <script>
+    (function () {
+      var theme = null;
+      try {
+        theme = JSON.parse(localStorage.getItem("weatherCurrencyDashboard:theme"));
+      } catch (error) {}
+      if (theme !== "dark" && theme !== "light") {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Weather and Currency Dashboard</h1>
-    <p>Check the weather in any city and convert between currencies.</p>
-  </header>
+  <div class="page">
+    <header class="site-header">
+      <div>
+        <h1>Weather and Currency Dashboard</h1>
+        <p>Check the weather in any city and convert between currencies.</p>
+      </div>
+      <button id="theme-button" type="button" class="secondary">Dark mode</button>
+    </header>
 
-  <main>
-    <section id="weather" class="card">
-  <h2>Weather</h2>
-  <form id="weather-form">
-    <label for="city-input">City</label>
-    <input id="city-input" type="text" placeholder="Try Lisbon" required>
-    <button type="submit">Search</button>
-  </form>
-  <button id="unit-button" type="button">Show °F</button>
-  <div id="weather-result" aria-live="polite">Search for a city to see its weather.</div>
-  <div id="forecast"></div>
-  </section>
+    <main>
+      <section id="weather" class="card">
+        <div class="card-header">
+          <h2>Weather</h2>
+          <button id="unit-button" type="button" class="secondary">Show °F</button>
+        </div>
 
-    <section id="currency" class="card">
-  <h2>Currency converter</h2>
-  <form id="currency-form">
-    <label for="amount-input">Amount</label>
-    <input id="amount-input" type="number" min="0" step="any" value="100">
+        <form id="weather-form" class="search-row">
+          <label for="city-input" class="visually-hidden">City</label>
+          <input id="city-input" type="text" placeholder="Search for a city, e.g. Lisbon" required>
+          <button type="submit">Search</button>
+        </form>
 
-    <label for="from-select">From</label>
-    <select id="from-select"><option>Loading...</option></select>
+        <div id="weather-result" aria-live="polite">Search for a city to see its weather.</div>
+        <div id="forecast"></div>
+      </section>
 
-    <button id="swap-button" type="button" aria-label="Swap currencies">⇄</button>
+      <section id="currency" class="card">
+        <div class="card-header">
+          <h2>Currency converter</h2>
+        </div>
 
-    <label for="to-select">To</label>
-    <select id="to-select"><option>Loading...</option></select>
+        <form id="currency-form">
+          <div class="field">
+            <label for="amount-input">Amount</label>
+            <input id="amount-input" type="number" min="0" step="any" value="100">
+          </div>
 
-    <button type="submit">Convert</button>
-  </form>
-  <div id="currency-result" aria-live="polite">Loading exchange rates...</div>
-</section>
-  </main>
+          <div class="currency-row">
+            <div class="field">
+              <label for="from-select">From</label>
+              <select id="from-select"><option>Loading...</option></select>
+            </div>
 
-  <footer>
-    <p>
-      Weather data by
-      <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>
-      (CC BY 4.0). Daily exchange rates by
-      <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a>.
-    </p>
-  </footer>
+            <button id="swap-button" type="button" class="secondary icon-button" aria-label="Swap currencies">⇄</button>
+
+            <div class="field">
+              <label for="to-select">To</label>
+              <select id="to-select"><option>Loading...</option></select>
+            </div>
+          </div>
+
+          <button type="submit">Convert</button>
+        </form>
+
+        <div id="currency-result" aria-live="polite">Loading exchange rates...</div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Weather data by
+        <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>
+        (CC BY 4.0). Daily exchange rates by
+        <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a>.
+      </p>
+    </footer>
+  </div>
 
   <script type="module" src="script.js"></script>
   <script type="module" src="currency.js"></script>
+  <script type="module" src="theme.js"></script>
 </body>
 </html>
